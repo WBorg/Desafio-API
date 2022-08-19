@@ -1,5 +1,7 @@
 const Users = require('../model/User');
 const bcrypt = require('bcryptjs');
+const sendMail = require('../providers/mailProvider')
+const {userEmailRecovery} = require('../template/userCreateMail')
 
 
 
@@ -146,8 +148,45 @@ exports.recovery = async (req,res) =>{
     })
   }
   else{
+
+    let code = (Math.random() * Date.now()).toString().substring(0,6)
+    
+    await Users.update({verificationCode: code},{where: {id: user.id} })
+    .then(()=>{
+    
+      //Enviar email
+    let dadosEmail = {
+      name : user.name,
+      code : code
+    }
+
+    let mailBody = userEmailRecovery(dadosEmail)
+    let subject = "Alteração de senha"
+    let to = user.email
+
+    sendMail(to,subject,mailBody)
+
+    return res.status(200).json({
+      erro: false,
+      mensagem: "Email enviado",
+      code
+    })
+    }).catch((err)=>{
+      return res.status(400).json({
+        erro: true,
+        mensagem: `Erro: falha no envio do email! ${err}`
+      })
+    })
     
     
+
+
+
+      
+    
+    
+
+
 
 
 

@@ -1,4 +1,4 @@
-module.exports = function sendMail(to,cc,subject,html){
+module.exports = function sendMail(to,subject,html){
     const nodemailer = require('nodemailer');
 
     const smtpTransport = nodemailer.createTransport({
@@ -14,8 +14,6 @@ module.exports = function sendMail(to,cc,subject,html){
     const message = {
         from: 'noreply@adim.com',
         to,
-        cc,
-        bcc: process.env.SMTP_USERNAMEACCOUNT,
         subject,
         html
     }
