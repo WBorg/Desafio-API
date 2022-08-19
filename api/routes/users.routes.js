@@ -7,7 +7,7 @@ usersRoutes.get("/all", users.findAll);
 usersRoutes.get("/show/:id", users.findOne);
 
 usersRoutes.put("/recovery", users.recovery);
-usersRoutes.post("/updatepassword", users.updatePassword);
+usersRoutes.put("/updatepassword", users.updatepassword);
 
 
 

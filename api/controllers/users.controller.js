@@ -50,7 +50,7 @@ exports.findOne = async (req, res) =>{
   const {id} = req.params;
   try{
     // await User.findAll({ where: {id: id}})
-    const users = await Users.findByPk(id);
+    const users = await Users.findByPk(id, {attributes: ['id','name', 'email']});
     if(!users){
       return res.status(400).json({
         erro: true,
@@ -68,7 +68,6 @@ exports.findOne = async (req, res) =>{
     })
   }
 }
-/************************************************************* */
 /************************************************************************************ */
 exports.login =  async (req, res) => {
   const user = await Users.findOne({
@@ -92,47 +91,9 @@ exports.login =  async (req, res) => {
   return res.json({
     erro:false,
     mensagem: "Login realizado com sucesso!!!",
-    token
-    
   })
+}
   
-
-
-
-  // return res.json({
-  //     erro:false,
-  //     mensagem: "Login realizado com sucesso!!!",
-  //     name: user.name,
-  //     email: user.email,
-  //     gender: user.gender
-  // })
-}
-/********************************************************************** */
-exports.updatePassword =  async (req, res) => {
-  const {id, password } = req.body;
-  var senhaCrypt = await bcrypt.hash(password, 8);
-  const users = await Users.findByPk(id);
-  if(!users){
-    return res.status(400).json({
-      erro: true,
-      mensagem: "Erro: Nenhum usuário encontrado!"
-    })
-  }
-
-  await Users.update({password: senhaCrypt }, {where: {id: id}})
-  .then(() => {
-      // console.log(res.json());
-      return res.json({
-          erro: false,
-          mensagem: "Senha editada com sucesso!"
-      }); 
-  }).catch( (err) => {
-      return res.status(400).json({
-          erro: true,
-          mensagem: `Erro: ${err}... A senha não foi alterada!!!`
-      })
-  })
-}
 
 /*********************************************************************** */
 
@@ -177,6 +138,53 @@ exports.recovery = async (req,res) =>{
         mensagem: `Erro: falha no envio do email! ${err}`
       })
     })
+  }
+}
+
+exports.updatepassword = async(req,res) => {
+  const {email,code, password, confirmpass} = req.body
+  const user = await Users.findOne({where: {email}})
+  if(!user || (password != confirmpass)){
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Email inválido e ou senhas não conferem!"
+    })
+  }
+  if(code == user.verificationCode){
+    const newpassword = await bcrypt.hash(password,8)
+    await Users.update({password:newpassword, verificationCode:null},{where: {id: user.id}})
+    .then(()=>{
+      return res.status(200).json({
+        erro: false,
+        mensagem: "Senha alterada com sucesso"
+      })
+     }
+    ).catch((err)=>{
+        return res.status(400).json({
+          erro: true,
+          mensagem: `Erro: ${err}. Falha na alteração de senha`
+        })
+      })
+  }
+  else{
+    return res.status(400).json({
+      erro: true,
+      mensagem: "Código inválido"
+    })
+  }
+}
+  
+  
+    
+    
+  
+
+
+
+
+  
+
+  
     
     
 
@@ -191,7 +199,4 @@ exports.recovery = async (req,res) =>{
 
 
 
-  }
 
-
-}
