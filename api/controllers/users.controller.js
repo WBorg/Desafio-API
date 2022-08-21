@@ -129,7 +129,7 @@ exports.recovery = async (req,res) =>{
 
     return res.status(200).json({
       erro: false,
-      mensagem: "Email enviado",
+      mensagem: "Um email com o assunto: ALTERAÇÃO DE SENHA foi enviado para você. Siga as intruções nele contidas.",
       code
     })
     }).catch((err)=>{
