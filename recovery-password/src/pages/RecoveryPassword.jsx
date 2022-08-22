@@ -44,6 +44,9 @@ function RecoveryPassword() {
           mensagem: response.data.mensagem,
           loading: false
         })
+        setValue({
+          email: ""
+        })
     }).catch((err)=>{
       if(err.response.data){
         setStatus({
@@ -81,9 +84,9 @@ function RecoveryPassword() {
                   )}
                   <FormControl>
                     <FormLabel>Email</FormLabel>
-                    <Input name="email" onChange={handleChange} _hover={{borderColor: '#000'}} placeholder='Digite seu email' borderColor="gray.600" isInvalid={estado} variant="outline"/>
+                    <Input name="email" value={value.email} onChange={handleChange} _hover={{borderColor: '#000'}} placeholder='Digite seu email' borderColor="gray.600" isInvalid={estado} variant="outline"/>
                   </FormControl>
-                  <Button isLoading={status.loading}loadingText='Enviando' colorScheme='teal' variant='solid' type="submit">
+                  <Button isLoading={status.loading}loadingText='Enviando' colorScheme='purple' variant='solid' type="submit" w="50%">
                     Enviar
                   </Button>
                   

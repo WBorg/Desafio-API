@@ -8,7 +8,7 @@ usersRoutes.get("/all", users.findAll);
 usersRoutes.get("/show/:id", users.findOne);
 
 usersRoutes.put("/recovery",timer, users.recovery);
-usersRoutes.put("/updatepassword", users.updatepassword);
+usersRoutes.put("/updatepassword",timer, users.updatepassword);
 
 
 
